@@ -1,0 +1,42 @@
+@font-face {
+  font-family: "Arcade Interlaced";
+  src:
+    url("fonts/arcade.woff2") format("woff2"),
+    url("fonts/arcade.woff") format("woff");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Honey Script";
+  src:
+    url("fonts/honey-script.woff2") format("woff2"),
+    url("fonts/honey-script.woff") format("woff");
+  font-display: swap;
+}
+
+body {
+  --color: #5a0923;
+
+  background: #223;
+  background:
+    linear-gradient(
+      to bottom,
+      transparent 0 62%,
+      #223 62% 65%,
+      #445 72% 100%
+    ),
+    repeating-linear-gradient(
+      -155deg,
+      var(--color) 5% 10%,
+      black 15% 20%,
+      var(--color) 25% 30%
+    );
+  height: 99vh;
+  overflow: hidden;
+}
+
+.container {
+  display: grid;
+  place-items: center;
+  margin-top: 3em;
+}
