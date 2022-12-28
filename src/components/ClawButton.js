@@ -40,7 +40,7 @@ class ClawButton extends HTMLElement {
           box-shadow 0.5s;
       }
 
-      .button:active {
+      .button.pressed {
         box-shadow:
           0 1px 0 var(--dark-color),
           0 2px 0 var(--dark-color),
@@ -61,8 +61,24 @@ class ClawButton extends HTMLElement {
     `;
   }
 
+  init() {
+    document.addEventListener("PRESS_BUTTON", () => this.onPressButton());
+    document.addEventListener("RELEASE_BUTTON", () => this.onReleaseButton());
+  }
+
   connectedCallback() {
     this.render();
+    this.init();
+  }
+
+  onPressButton() {
+    const button = this.shadowRoot.querySelector(".button");
+    button.classList.add("pressed");
+  }
+
+  onReleaseButton() {
+    const button = this.shadowRoot.querySelector(".button");
+    setTimeout(() => button.classList.remove("pressed"), 250);
   }
 
   render() {

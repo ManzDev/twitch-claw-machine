@@ -4,6 +4,10 @@ class ClawJoystick extends HTMLElement {
     this.attachShadow({ mode: "open" });
   }
 
+  init() {
+    document.addEventListener("SPIN_CLAW", (ev) => this.moveJoystick(ev.detail));
+  }
+
   static get styles() {
     return /* css */`
       :host {
@@ -86,8 +90,16 @@ class ClawJoystick extends HTMLElement {
     `;
   }
 
+  moveJoystick(direction) {
+    this.classList.add(direction);
+    setTimeout(() => {
+      this.classList.remove(direction);
+    }, 500);
+  }
+
   connectedCallback() {
     this.render();
+    this.init();
   }
 
   render() {

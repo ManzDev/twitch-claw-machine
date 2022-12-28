@@ -3,10 +3,64 @@ import "./ControlPanel.js";
 import "./CoinSlots.js";
 import "./MadeBox.js";
 
+const STEP = 2;
+const LEFT_LIMIT = -60;
+const RIGHT_LIMIT = 60;
+
 class ClawMachine extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
+  }
+
+  init() {
+    this.claw = {
+      x: 0,
+      y: -170,
+      // rotation: -75
+    };
+    globalThis.addEventListener("keydown", (ev) => this.onKeydown(ev));
+    globalThis.addEventListener("keyup", (ev) => this.onKeyup(ev));
+  }
+
+  update() {
+    this.style.setProperty("--claw-x", `${this.claw.x}px`);
+    this.style.setProperty("--claw-y", `${this.claw.y}px`);
+    // this.style.setProperty("--claw-rotation", `${this.claw.rotation}deg`);
+  }
+
+  onKeydown(ev) {
+    const { key } = ev;
+
+    if (key === "ArrowLeft") {
+      const event = new CustomEvent("SPIN_CLAW", { detail: "left" });
+      document.dispatchEvent(event);
+      this.claw.x = Math.max(LEFT_LIMIT, this.claw.x - STEP);
+      this.update();
+    } else if (key === "ArrowRight") {
+      const event = new CustomEvent("SPIN_CLAW", { detail: "right" });
+      document.dispatchEvent(event);
+      this.claw.x = Math.min(RIGHT_LIMIT, this.claw.x + STEP);
+      this.update();
+    } else if (key === " ") {
+      const event = new CustomEvent("PRESS_BUTTON", { detail: {} });
+      document.dispatchEvent(event);
+    }
+  }
+
+  onKeyup(ev) {
+    const { key } = ev;
+
+    if (key === "ArrowLeft") {
+      const event = new CustomEvent("SPIN_CLAW", { detail: "left" });
+      document.dispatchEvent(event);
+    } else if (key === "ArrowRight") {
+      const event = new CustomEvent("SPIN_CLAW", { detail: "right" });
+      document.dispatchEvent(event);
+    } else if (key === " ") {
+      const event = new CustomEvent("RELEASE_BUTTON", { detail: {} });
+      document.dispatchEvent(event);
+    }
   }
 
   static get styles() {
@@ -18,13 +72,17 @@ class ClawMachine extends HTMLElement {
         --medium-color: #4B0082;
         --shadow-color: #6f06b9;
         --light-color: #9932CC;
+
+        --claw-x: 0;              /* -60px, 60px */
+        --claw-y: -170px;         /* -170px, 0px */
+        --claw-rotation: -75deg;  /* -35deg, -75deg */
       }
 
       .machine-container {
         width: var(--width);
         height: var(--height);
         display: grid;
-        grid-template-rows: 10% 45% 6% 35%;
+        grid-template-rows: 10% 45% 6% 35% 2%;
       }
 
       .top-machine {
@@ -68,18 +126,18 @@ class ClawMachine extends HTMLElement {
         place-items: center;
       }
 
-      coin-slots {
-
-      }
-
-      made-box {
-
+      .base-machine {
+        width: calc(var(--width) - 40px);
+        margin: 0 auto;
+        background: var(--dark-color);
+        border-radius: 0 0 50px 50px
       }
     `;
   }
 
   connectedCallback() {
     this.render();
+    this.init();
   }
 
   render() {
@@ -99,6 +157,7 @@ class ClawMachine extends HTMLElement {
           <made-box></made-box>
         </div>
       </div>
+      <div class="base-machine"></div>
     </div>`;
   }
 }

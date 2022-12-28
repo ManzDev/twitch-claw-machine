@@ -1,3 +1,5 @@
+import "./TheClaw.js";
+
 class CrystalCube extends HTMLElement {
   constructor() {
     super();
@@ -101,7 +103,7 @@ class CrystalCube extends HTMLElement {
     <div class="cube-container">
       <div class="cube-back"></div>
       <div class="content">
-        <div class="deleteme">GARRA</div>
+        <the-claw></the-claw>
         <div></div>
         <div class="deleteme">CONTENIDO</div>
       </div>
