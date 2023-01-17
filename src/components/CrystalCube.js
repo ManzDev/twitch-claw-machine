@@ -1,4 +1,5 @@
 import "./TheClaw.js";
+import "./GiftBall.js";
 
 class CrystalCube extends HTMLElement {
   constructor() {
@@ -51,7 +52,7 @@ class CrystalCube extends HTMLElement {
         position: relative;
         z-index: 1;
         display: grid;
-        grid-template-rows: 15% 1fr 15%;
+        grid-template-rows: 15% 1fr 25%;
         justify-content: center;
         justify-items: center;
         height: 100%;
@@ -87,14 +88,30 @@ class CrystalCube extends HTMLElement {
         );
       }
 
-      .deleteme {
-        display: none;
+      .balls-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        transform: translateY(-25%)
+      }
+
+      .deep {
+        display: flex;
+        width: 100%;
+        transform: translate(14%, -155%);
+        filter: contrast(150%) brightness(40%);
+        z-index: -1;
       }
     `;
   }
 
   connectedCallback() {
     this.render();
+  }
+
+  isClawBlocked() {
+    const claw = this.shadowRoot.querySelector("the-claw");
+    return claw.blocked;
   }
 
   render() {
@@ -104,8 +121,23 @@ class CrystalCube extends HTMLElement {
       <div class="cube-back"></div>
       <div class="content">
         <the-claw></the-claw>
-        <div></div>
-        <div class="deleteme">CONTENIDO</div>
+        <div>
+        </div>
+        <div class="balls-container">
+          <gift-ball></gift-ball>
+          <gift-ball></gift-ball>
+          <gift-ball></gift-ball>
+          <gift-ball></gift-ball>
+          <gift-ball></gift-ball>
+          <gift-ball></gift-ball>
+          <gift-ball></gift-ball>
+          <gift-ball></gift-ball>
+          <div class="deep">
+            <gift-ball></gift-ball>
+            <gift-ball></gift-ball>
+            <gift-ball></gift-ball>
+          </div>
+        </div>
       </div>
     </div>`;
   }

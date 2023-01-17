@@ -13,7 +13,6 @@ class ArmClaw extends HTMLElement {
         translate: 0 -10px;
       }
 
-
       :host(.left) {
         scale: -1 1;
       }
@@ -29,18 +28,12 @@ class ArmClaw extends HTMLElement {
 
       .arm-container {
         transform-origin: 50% 0;
-        transform: rotate(var(--claw-rotation, -75deg));
+        transform: rotate(-75deg);
         transition: transform 0.5s;
       }
 
-      :host(.close) {
-        animation: close 0.5s linear 1 forwards;
-      }
-
-      @keyframes close {
-        to {
-          --claw-rotation: -35deg;
-        }
+      :host(.close) .arm-container {
+        transform: rotate(-35deg);
       }
 
       .arm {

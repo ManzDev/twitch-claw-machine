@@ -4,6 +4,7 @@ class OnlyClaw extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
+    this.blocked = false;
   }
 
   static get styles() {
@@ -12,33 +13,34 @@ class OnlyClaw extends HTMLElement {
       }
 
       .container {
-        translate: 0 var(--claw-y, -170px);
+        /* translate: 0 var(--claw-y, -170px); */
+        translate: 0 -170px;
         transition: translate 1s;
       }
 
-      :host(.down) {
-        animation: down 3s linear 1;
+      :host(.down) .container {
+        translate: 0px 0px;
       }
 
-      @keyframes down {
-        0%, 100% {
-          --claw-y: -170px;
-        }
-
-        35%, 65% {
-          --claw-y: 0px;
-        }
+      .only-claw {
+        transition: rotate 0.5s;
+        position: relative;
       }
-
-      .only-claw { transition: rotate 0.5s; }
       .only-claw.left { rotate: -10deg; }
       .only-claw.right { rotate: 10deg; }
 
       .extender-claw {
         width: 5px;
-        height: 180px;
+        height: 200px;
         margin: auto;
         background: #222;
+      }
+
+      gift-ball.chosen {
+        display: block;
+        position: absolute;
+        top: -7px;
+        left: 3px;
       }
 
       .axis {
@@ -71,29 +73,93 @@ class OnlyClaw extends HTMLElement {
   }
 
   onPressButton() {
-    this.classList.add("down");
-    setTimeout(() => this.onCloseClaw(), 1250);
-    setTimeout(() => this.onOpenClaw(), 4000);
+    this.down();
+    const option = Math.floor(Math.random() * 3);
+
+    if (option === 1) {
+      this.lose();
+    } else if (option === 2) {
+      this.win();
+    } else {
+      this.fail();
+    }
   }
 
-  onCloseClaw() {
-    const arms = [...this.shadowRoot.querySelectorAll("arm-claw")];
-    arms.forEach(arm => arm.classList.add("close"));
+  win() {
+    setTimeout(() => this.chooseBall(), 1000);
+    setTimeout(() => this.up(), 3000);
+    setTimeout(() => this.right(), 4000);
+    setTimeout(() => this.drop(true), 5250);
   }
 
-  onOpenClaw() {
+  lose() {
+    setTimeout(() => this.close(), 1000);
+    setTimeout(() => this.up(), 3000);
+    setTimeout(() => this.open(), 4000);
+  }
+
+  chooseBall() {
+    const onlyClaw = this.shadowRoot.querySelector(".only-claw");
+    const markup = /* html */"<gift-ball class=\"chosen\"></gift-ball>";
+    onlyClaw.insertAdjacentHTML("beforeend", markup);
+  }
+
+  fail() {
+    setTimeout(() => this.chooseBall(), 1000);
+    setTimeout(() => this.up(), 3000);
+    setTimeout(() => this.drop(), 3500);
+  }
+
+  up() {
     this.classList.remove("down");
+    setTimeout(() => (this.blocked = false), 1000);
+  }
+
+  down() {
+    this.classList.add("down");
+    this.blocked = true;
+  }
+
+  right() {
+    this.blocked = true;
+    const event = new CustomEvent("claw:right", { bubbles: true, composed: true });
+    this.dispatchEvent(event);
+  }
+
+  drop(save = false) {
+    const ball = this.shadowRoot.querySelector("gift-ball.chosen");
+    ball.classList.add("fall");
+
+    setTimeout(() => {
+      if (!save) {
+        ball.remove();
+      } else {
+        const event = new CustomEvent("transferball", {
+          bubbles: true,
+          composed: true,
+          detail: ball
+        });
+        ball.classList.remove("fall");
+        this.dispatchEvent(event);
+      }
+    }, 1000);
+  }
+
+  open() {
     const arms = [...this.shadowRoot.querySelectorAll("arm-claw")];
     arms.forEach(arm => arm.classList.remove("close"));
+  }
+
+  close() {
+    const arms = [...this.shadowRoot.querySelectorAll("arm-claw")];
+    arms.forEach(arm => arm.classList.add("close"));
   }
 
   moveClaw(direction) {
     const onlyClaw = this.shadowRoot.querySelector(".only-claw");
 
     onlyClaw.classList.add(direction);
-    setTimeout(() => {
-      onlyClaw.classList.remove(direction);
-    }, 500);
+    setTimeout(() => onlyClaw.classList.remove(direction), 500);
   }
 
   render() {

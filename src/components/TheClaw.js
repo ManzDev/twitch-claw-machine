@@ -14,6 +14,15 @@ class TheClaw extends HTMLElement {
         transition: transform 0.1s linear;
       }
 
+      :host(.right) {
+        transform: translateX(65px);
+        transition-duration: 1s;
+      }
+
+      :host(.back) {
+        transition-duration: 1s;
+      }
+
       .claw-container {
         width: 55px;
         height: 300px;
@@ -28,6 +37,20 @@ class TheClaw extends HTMLElement {
 
   connectedCallback() {
     this.render();
+    this.addEventListener("claw:right", () => this.moveRight());
+  }
+
+  moveRight() {
+    this.classList.add("right");
+    setTimeout(() => {
+      this.classList.remove("right");
+      this.classList.add("back");
+    }, 1500);
+    setTimeout(() => this.classList.remove("back"), 2500);
+  }
+
+  get blocked() {
+    return this.shadowRoot.querySelector("only-claw").blocked;
   }
 
   render() {
