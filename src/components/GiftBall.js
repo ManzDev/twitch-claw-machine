@@ -109,8 +109,14 @@ class GiftBall extends HTMLElement {
   }
 
   async connectedCallback() {
-    this.render();
-    await this.init();
+    const isChosen = this.classList.contains("transfer");
+
+    if (!isChosen) {
+      this.render();
+      await this.init();
+    } else {
+      this.classList.remove("transfer");
+    }
   }
 
   putGift(picture) {

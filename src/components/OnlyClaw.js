@@ -140,6 +140,7 @@ class OnlyClaw extends HTMLElement {
           detail: ball
         });
         ball.classList.remove("fall");
+        ball.classList.add("transfer");
         this.dispatchEvent(event);
       }
     }, 1000);
